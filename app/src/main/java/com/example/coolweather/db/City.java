@@ -4,16 +4,17 @@ import org.litepal.crud.DataSupport;
 
 /**
  * Created by 蚍蜉 on 2017/2/21.
+ * 数据库表结构之City
  */
 
 public class City extends DataSupport {
-    private int id;//每个类都有的id
+    private int id;//每个类都有的id，
 
     private String cityName;//城市名
 
     private int cityCode;//城市代码
 
-    private int provinceId;//城市所属省id
+    private int provinceId;//城市所属省的id
 
     public int getId(){
         return id;

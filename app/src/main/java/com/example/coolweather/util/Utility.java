@@ -14,7 +14,7 @@ import org.w3c.dom.Text;
 
 /**
  * Created by 蚍蜉 on 2017/2/17.
- * Utility工具类，用于处理服务器返回JSON的解析
+ * Utility工具类，用于服务器返回JSON的解析以及处理
  */
 
 public class Utility {
@@ -23,16 +23,20 @@ public class Utility {
      * 用于解析和处理服务器返回的省级数据
      */
     public static boolean handleProvinceResponse(String response) {
-        if (!TextUtils.isEmpty(response)) {//非空则解析
+        if (!TextUtils.isEmpty(response)) {//TextUtil的方法判断返回的请求是否为空
             try {
-                JSONArray allProvinces = new JSONArray(response);//用response创建JSON数组
-                for (int i = 0; i < allProvinces.length(); i++) {//一条条解析
+                //将response转化为JSON数组，
+                JSONArray allProvinces = new JSONArray(response);
+                for (int i = 0; i < allProvinces.length(); i++) {
+                    //遍历JSON数组，从数组中读取记录到JSON对象
                     JSONObject provinceObject = allProvinces.getJSONObject(i);//获得第i个JSON对象
-                    //将JSON对象中的内容存储到Province中
+                    //声明类对象
                     Province province = new Province();
+                    //将JSON对象中的内容存储到Province中
                     province.setProvinceName(provinceObject.getString("name"));
                     province.setProvinceCode(provinceObject.getInt("id"));
-                    province.save();//调用save存储到database
+                    //调用save存储到database
+                    province.save();
                 }
                 return true;//ok
             } catch (JSONException e) {
