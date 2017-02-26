@@ -58,9 +58,9 @@ public class ChooseAreaFragment extends Fragment {//继承Fragment类
 
     private ListView listView;//列表展示
 
-    private ArrayAdapter<String> adapter;//ListView适配器，
+    private ArrayAdapter<String> adapter;//ListView的适配器，适配来自dataList的数据
 
-    private List<String> dataList = new ArrayList<>();//add存储需要listView显示的数据
+    private List<String> dataList = new ArrayList<>();//通过add方法，存储需要listView显示的数据
 
     /**
      * 省列表
@@ -111,7 +111,9 @@ public class ChooseAreaFragment extends Fragment {//继承Fragment类
         titleText = (TextView) view.findViewById(R.id.title_text);
         backButton = (Button) view.findViewById(R.id.back_button);
         listView = (ListView) view.findViewById(R.id.list_view);
+        //通过dataList获得适配器Adapter
         adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, dataList);
+        //将适配器Adapter传入listview
         listView.setAdapter(adapter);
         //别忘了返回view
         return view;
@@ -172,21 +174,23 @@ public class ChooseAreaFragment extends Fragment {//继承Fragment类
         titleText.setText("中国");
         //标题栏back按钮不显示
         backButton.setVisibility(View.GONE);
-        //从本地数据库获取所有Province类型数据，存储在provinceList中
-        provinceList = DataSupport.findAll(Province.class);
 
+        //从本地数据库获取所有Province类型数据，存储在provinceList中
+        provinceList = DataSupport.findAll(Province.class);//参数传入需要的类模板
 
         if (provinceList.size() > 0) {//如果本地有数据
             dataList.clear();//清空datalist列表
 
-            //遍历provinceList列表，将读取到的provinceList数据中的
-            // province字段add到datalist中去
+            //遍历provinceList列表，将读取到的
+            // provinceList中的province字段add到datalist中去
             for (Province province : provinceList) {
                 dataList.add(province.getProvinceName());
             }
-            //
+            //通知listView刷新更改
             adapter.notifyDataSetChanged();
+            //保持listView的item位置不变
             listView.setSelection(0);
+            //更新当前位置
             currentLevel = LEVEL_PROVINCE;
         } else {
             String address = "http://guolin.tech/api/china";
@@ -257,7 +261,7 @@ public class ChooseAreaFragment extends Fragment {//继承Fragment类
         HttpUtil.sendOkHttpRequest(address,
                 new Callback() {//注册一个callback回调事件，处理服务器返回的信息
 
-            //重写onResponse响应，
+            //重写onResponse
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 //从参数response获取请求回复信息
@@ -265,7 +269,7 @@ public class ChooseAreaFragment extends Fragment {//继承Fragment类
                 //标记是否成功获得，并且成功解析
                 boolean result = false;
 
-                //根据传入的数据类型type，对需要的数据进行解析
+                //根据传入的数据类型type，对需要的数据进行解析，并存储到数据库
                 if ("province".equals(type)) {
                     result = Utility.handleProvinceResponse(responseText);
                 } else if ("city".equals(type)) {
@@ -274,7 +278,8 @@ public class ChooseAreaFragment extends Fragment {//继承Fragment类
                     result = Utility.handleCountyResponse(responseText, selectedCity.getId());
                 }
 
-                //如果获取成功，那么开启UI线程
+                //如果数据库获取数据成功，那么再次调用queryProvince方法，从数据库获取数据
+                //queryProvince涉及UI操作，所以通过runOnUiThread从子线程回到主线程
                 if (result) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
