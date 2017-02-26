@@ -23,6 +23,6 @@ public class Weather {
     //天气建议
     public Suggestion suggestion;
     //一周天气预测，用一个泛型集合List来存储
-    @SerializedName("daily_weather")
+    @SerializedName("daily_forecast")
     public List<Forecast> forecastList;
 }
