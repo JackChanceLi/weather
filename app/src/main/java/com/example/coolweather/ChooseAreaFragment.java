@@ -151,7 +151,8 @@ public class ChooseAreaFragment extends Fragment {//继承Fragment类
                     //将选中的县的信息传递过去
                     intent.putExtra("weather_id",weatherId);
                     startActivity(intent);
-                    getActivity().finish();
+                    //不杀死选择列表
+                    //getActivity().finish();
                     Log.d("chooseactivity","intent启动");
                 }
             }
